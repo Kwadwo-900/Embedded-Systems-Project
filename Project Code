@@ -1,0 +1,63 @@
+// C++ code
+//
+
+//setting a variable to the switch sensor
+const int switchPin = 8;
+
+unsigned long previousTime = 0;//variable holding the last time the led chnaged 
+int switchState = 0;//variable holding the switch switch state
+int prevSwitchState = 0;//variable holding the previous state
+
+int led = 2;//variable used to count the leds instead of counting them one after the other
+
+//long interval = 600000;
+long interval = 600;
+
+void setup()
+{
+  //setting the oinmode for the leds using a for loop 
+  //instead of seting them one after the other , helps save time
+  //the led pins start from 2 and end at 7, leds are set to output
+  for(int x = 2; x < 8;x++)
+  {
+    pinMode(x, OUTPUT);
+  }
+  //setting the tilt sensor to input 
+  pinMode(switchPin, INPUT);
+}
+
+void loop()
+{
+  //ths variable is used to set the current time the system has been 
+  //in milliseconds
+  unsigned long currentTime = millis();
+  
+  //we check the whether enough time has passed to be able to turn on the led
+  //subtracting previous time from current time and matching it against the interval 
+  if(currentTime - previousTime > interval)
+  { 
+    previousTime = currentTime;
+    digitalWrite(led, HIGH);
+    led++;
+    
+    //check if the led on pin 7 is on, this is means all leds are on 
+    if(led == 7){
+    }
+  }
+  
+  //read the values in the switch 
+  switchState = digitalRead(switchPin);
+  //we check to see the state of the tilt sensor
+  //if they are different they leds turn off
+  if(switchState != prevSwitchState){
+    for(int x = 2; x < 8; x++)
+    {
+      digitalWrite(x,LOW);
+    }
+    
+    //everything goes back to the previous state
+    led = 2;
+    previousTime = currentTime;
+  }
+  prevSwitchState = switchState;
+}
